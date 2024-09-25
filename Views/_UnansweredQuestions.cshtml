@@ -1,0 +1,83 @@
+@model PaginatedList<FAQEntity>
+@{
+    string view = "_UnansweredQuestions";   
+}
+
+@if (Model.Items.Count < 1)
+{
+    <div class="card-group">
+        <div class="card card-default">
+            <div class="card-body">
+                <tr class="flex justify-space-center h-80vh align-center" >
+                    <td colspan="3">
+                        <h3 class="text-center mt-3 pt-3">@T("Plugins.F.A.Q.No_Questions_Found")</h3>
+                    </td>
+                </tr>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="cards-group">
+       <div class="card card-default">
+           <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@T("Plugins.F.A.Q.Question")</th>
+                            <th>@T("Plugins.F.A.Q.Product") </th>
+                            <th>@T("Plugins.F.A.Q.Actions")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filters-->
+                        @await Html.PartialAsync("~/Plugins/F.A.Q/Views/Shared/_Filters.cshtml",view)
+ 
+                        @foreach (var faq in Model.Items)
+                        {
+                            <tr>
+                                <td> @faq.Question </td>
+                                <td>  <a target="_blank" href="@Url.Action("Edit", "Product", new { id = faq.ProductId })">@faq.ProductName</a>  </td>
+                                <td>
+                                        <div class="btn-group" role="group">
+                                        <button class="btn btn-success btn-sm" onclick="openEditModal('@Html.Raw(JavaScriptEncoder.Default.Encode(faq.Question))', '@faq.Id', '', '_UnansweredQuestions')">@T("Plugins.F.A.Q.Give_Answer")</button>
+                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('@faq.Id','@view')"> <i class="fas fa-trash"></i> </button>
+                                        </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <!--Dont show pagination if its on the first page-->
+                @if (Model.ShowPages)
+                {
+                    <nav>
+                        <ul class="pagination">
+
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="#" data-page="@(Model.PageIndex - 1)" data-view="@view">Previous</a>
+                                </li>
+                            }
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                                    <a class="page-link" href="#" data-page="@i" data-view="@view">@i</a>
+                                </li>
+                            }
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="#" data-page="@(Model.PageIndex + 1)" data-view="@view">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+     }
+  

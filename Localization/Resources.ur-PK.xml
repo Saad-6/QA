@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Language Name="Urdu" SupportedVersion="4.70">
+    <LocaleResource Name="Plugins.F.A.Q.UnAnswered_Questions">
+        <Value>غیرجواب شدہ سوالات</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answered_Questions">
+        <Value>جواب شدہ سوالات</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Question">
+        <Value>سوال</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answer">
+        <Value>جواب</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Give_Answer">
+        <Value>جواب دیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Edit_Answer">
+        <Value>جواب میں ترمیم کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Field_Required">
+        <Value>فیلڈ کی ضرورت ہے</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Save">
+        <Value>محفوظ کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Close">
+        <Value>بند کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Last_Modified">
+        <Value>آخری ترمیم</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Delete">
+        <Value>حذف کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Cancel">
+        <Value>منسوخ کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Delete_Confirmation">
+        <Value>کیا آپ واقعی اس FAQ کو حذف کرنا چاہتے ہیں؟</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Manage_Product_Questions">
+        <Value>پروڈکٹ سوالات کا انتظام کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Configure">
+        <Value>تشکیل دیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Product">
+        <Value>پروڈکٹ</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Actions">
+        <Value>عمل</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Visibility">
+        <Value>نظر آنا</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.No_Questions_Found">
+        <Value>کوئی سوالات نہیں ملے</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Asked_By">
+        <Value>سوال پوچھا گیا</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answered_By">
+        <Value>جواب دیا</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Ask_a_Question">
+        <Value>سوال پوچھیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Ask">
+        <Value>پوچھیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Success_Message">
+        <Value>آپ کا سوال موصول ہوا ہے اور فی الحال جائزہ لیا جا رہا ہے۔ ہم جلد از جلد جواب فراہم کریں گے۔</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Be_First_To_Ask">
+        <Value>اس پروڈکٹ کے بارے میں سوال پوچھنے والے پہلے بنیں۔</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Questions_About_This_Product">
+        <Value>اس پروڈکٹ کے بارے میں سوالات۔</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Question_Goes_Here">
+        <Value>...آپ کا سوال یہاں لکھیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Page_Size">
+        <Value>صفحے کا سائز</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Questions_Settings">
+        <Value>سوالات کی ترتیبات</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Back">
+        <Value>پیچھے</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Settings_Updated">
+        <Value>آپ کی ترتیبات کو اپ ڈیٹ کر دیا گیا ہے!</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Plugins.F.A.Q.Allow_Anonymous_To_Ask_Questions">
+        <Value>گمنام صارفین کو سوالات پوچھنے کی اجازت دیں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Widget_Location">
+        <Value>پروڈکٹ کی تفصیلات کے صفحے پر ویجیٹ کا مقام</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Search">
+        <Value>تلاش کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Default_Responder_Name">
+        <Value>پہلے سے طے شدہ جواب دینے والے کا نام</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Search_By_Product_Name">
+        <Value>پروڈکٹ کے نام سے تلاش کریں</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Login_To_Ask_A_Question">
+        <Value>سوال پوچھنے کے لیے لاگ ان کریں</Value>
+    </LocaleResource>
+
+</Language>

@@ -1,0 +1,297 @@
+@model JointQuestionModel<FAQEntity>
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = "Manage Questions";
+}
+<link rel="stylesheet" href="~/Plugins/F.A.Q/Content/admin.css" />
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Plugins.F.A.Q.Manage_Product_Questions")
+    </h1>
+    <div class="float-right">
+        <a href="@Url.Action("Configure","Questions")" class="btn btn-warning btn-sm">@T("Plugins.F.A.Q.Configure")</a>
+    </div>
+</div>
+    
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+
+    <div class="card card-default">
+       
+        <div class="card-body">
+           
+        <ul class="nav nav-tabs" id="faqTab" role="tablist">
+            <li class="nav-item"> <a class="nav-link active" id="unanswered-questions-tab" data-toggle="tab" href="#unanswered-questions" role="tab" aria-controls="unanswered-questions" aria-selected="true">@T("Plugins.F.A.Q.Unanswered_Questions") </a> </li>
+            <li class="nav-item">  <a class="nav-link" id="answered-questions-tab" data-toggle="tab" href="#answered-questions" role="tab" aria-controls="answered-questions" aria-selected="false">@T("Plugins.F.A.Q.Answered_Questions") </a> </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="faqTabContent">
+           
+            <div class="tab-pane fade show active" id="unanswered-questions" role="tabpanel" aria-labelledby="unanswered-questions-tab">
+                @Html.Partial("~/Plugins/F.A.Q/Views/_UnansweredQuestions.cshtml", Model.Unanswered)
+            </div>
+            <div class="tab-pane fade" id="answered-questions" role="tabpanel" aria-labelledby="answered-questions-tab">
+                @Html.Partial("~/Plugins/F.A.Q/Views/_AnsweredQuestions.cshtml", Model.Answered)
+            </div>
+          
+        </div>
+           
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<!-- Modal for CRUD operations -->
+<!-- Common Modal -->
+<div id="editAnswerModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@T("Plugins.F.A.Q.Edit_Answer")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="faqId" />
+                <input type="hidden" id="viewName" />
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="answerText">@T("Plugins.F.A.Q.Answer"):</label>
+                    <span style="display:none;" id="validation" class="text-danger">@T("Plugins.F.A.Q.Field_Required")</span>
+                    <textarea maxlength="255" rows="6" required id="answerText" oninput="removeValidation()" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveAnswer()">@T("Plugins.F.A.Q.Save")</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@T("Plugins.F.A.Q.Close")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="deleteConfirmModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@T("Plugins.F.A.Q.Delete")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>@T("Plugins.F.A.Q.Delete_Confirmation")</p>
+            </div>
+            <div class="modal-footer">
+                <input id="deleteViewName" hidden />
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@T("Plugins.F.A.Q.Cancel")</button>
+                <button type="button" class="btn btn-danger" onclick="deleteFAQ()">@T("Plugins.F.A.Q.Delete")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    function toggleAnswerUp(id) {
+        console.log("Function works in  view");
+        var answerDesktop = document.getElementById('answer-' + id);
+        var answerMobile = document.getElementById('answer-mobile-' + id);
+        var icon = event.currentTarget.querySelector('i');
+
+        if (answerDesktop) {
+            answerDesktop.style.display = answerDesktop.style.display === 'none' ? 'block' : 'none';
+        }
+        if (answerMobile) {
+            answerMobile.style.display = answerMobile.style.display === 'none' ? 'block' : 'none';
+        }
+
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+    }
+    function updatePageSize(viewName) {
+        // Update the hidden input with the selected page size value
+        const size = $('#' + viewName).val();
+        $('#pageSizeHidden_' + viewName).val(size);
+    }
+    function toggleAnswer(id) {
+        console.log("Existing Function works in  view");
+        $("#answer-" + id).slideToggle();
+        $("#answer-" + id).siblings('.faq-question').find('i').toggleClass('fa-chevron-down fa-chevron-up');
+    }
+
+    function toggleVisibility(id, viewName,visibility) {
+        var answer = "";
+        var token = getAntiForgeryToken();
+        $.ajax({
+            url: '@Url.Action("ToggleVisibility", "Questions")',
+            type: 'POST',
+            data: {
+                faqId: id,
+                view: viewName,
+                visibility,
+                __RequestVerificationToken: token
+            },
+            success: function (response) {
+                updateContent(viewName, response, true);
+            },
+            error: function (xhr) {
+                console.log("load page error");
+                console.error("Error loading page: ", xhr);
+            }
+
+        });
+
+          }
+
+    function handleChange(page, viewName,isPagination = true) {
+
+        console.log("Entered handleChange with page: " + page + " and viewName: " + viewName);
+        var token = getAntiForgeryToken();
+
+        // Retrieve page size from hidden input field
+        var pageSize = $('#' + viewName).val();
+
+        console.log("Selected pageSize: " + pageSize);
+
+        var query = $('#' + viewName + 'Param').val();
+        
+        $.ajax({
+            url: '@Url.Action("ReturnPartialView", "Questions")',
+            type: 'POST',
+            data: {
+                view: viewName,
+                pageNumber: page,
+                pageSize: pageSize,
+                productName: query,
+                __RequestVerificationToken: token
+            },
+            success: function (response) {
+                console.log("View Name in success = " + viewName);
+                updateContent(viewName, response, isPagination);
+            },
+            error: function (xhr) {
+                console.log("load page error");
+                console.error("Error loading page: ", xhr);
+            }
+        });
+    }
+    function getAntiForgeryToken() {
+        return $('input[name="__RequestVerificationToken"]').val();
+    }
+ 
+    $(document).on('click', '.page-link', function (e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        var viewName = $(this).data('view');
+        handleChange(page, viewName);
+    });
+
+    $(document).ready(function () {
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('a[href="' + activeTab + '"]').tab('show');
+        }
+    });
+
+    // Store the active tab before making any changes
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+
+
+    function openEditModal(question, id, answer = '', viewName = '') {
+        console.log("Entered openeditModal function");
+        $('#questionText').text(question); 
+        $('#answerText').val(answer);
+        $('#faqId').val(id);
+        $('#viewName').val(viewName);
+        $('#editAnswerModal').modal('show');
+    }
+    function removeValidation() {
+              console.log("Enetere validation removal")
+        document.getElementById("validation").textContent = "";
+
+      }
+    function saveAnswer() {
+        var id = $('#faqId').val();
+        console.log("FAQ id: " + id);
+        var answer = $('#answerText').val();
+        console.log("Answer: " + answer);
+        var viewName = $('#viewName').val();
+        console.log("View: " + viewName);
+        var token = getAntiForgeryToken();
+        if (answer
+            === "") {
+            const element = document.getElementById('validation');
+            element.style.display = 'block';
+            
+            return false;
+        }
+        $.ajax({
+            url: '@Url.Action("UpdateAnswer", "Questions")',
+            type: 'POST',
+            data: { faqId: id, answer: answer, view: viewName, __RequestVerificationToken: token },
+            success: function (response) {
+                $('#editAnswerModal').modal('hide');
+                console.log("View Name in success = "+ " "+ viewName);
+                updateContent(viewName, response,false);
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX error: " + status + ' - ' + error);
+            }
+        });
+    }
+    function confirmDelete(id,viewName) {
+        faqIdToDelete = id;
+        $('#deleteViewName').val(viewName);
+        $('#deleteConfirmModal').modal('show');
+    }
+    function deleteFAQ() {
+        var viewName = $('#deleteViewName').val();
+        $.ajax({
+            url: '@Url.Action("Delete", "Questions")',
+            type: 'POST',
+            data: { id: faqIdToDelete,view:viewName, __RequestVerificationToken: getAntiForgeryToken() },
+            success: function (response) {
+                $('#deleteConfirmModal').modal('hide');
+                updateContent(viewName,response, true);
+              
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX error: " + status + ' - ' + error);
+                $('#deleteConfirmModal').modal('hide');
+            }
+        });
+    }
+    function updateContent(viewName, response,isPagination = true) {
+        console.log("View Name in success = " + " " + viewName);
+        if (viewName === '_UnansweredQuestions') {
+
+            console.log("view is unanswered");
+            $('#unanswered-questions').html(response);
+            if (!isPagination) {
+
+            handleChange(1, "_AnsweredQuestions");
+            }
+
+        } else if (viewName === '_AnsweredQuestions') {
+            
+            $('#answered-questions').html(response);
+            $('#answered-questions-tab').tab('show');
+           
+            console.log("view is answered");
+        
+        } else if (viewName === '_AllQuestions') {
+
+            console.log("view is all");
+            $('#all-questions').html(response);
+        
+        } else {
+            console.log("its none of the above");
+        }
+    }
+    </script>

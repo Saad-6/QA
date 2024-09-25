@@ -1,0 +1,132 @@
+@model PaginatedList<FAQEntity>
+
+@{
+    string view = "_AnsweredQuestions";
+}
+@if (Model.Items.Count < 1)
+{
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center">@T("Plugins.F.A.Q.No_Questions_Found")</h3>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            @await Html.PartialAsync("~/Plugins/F.A.Q/Views/Shared/_Filters.cshtml", view)
+
+            <div class="table-responsive d-none d-md-block">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">@T("Plugins.F.A.Q.Question")</th>
+                            <th style="width: 20%;">@T("Plugins.F.A.Q.Product")</th>
+                            <th style="width: 20%;">@T("Plugins.F.A.Q.Last_Modified")</th>
+                            <th style="width: 20%;">@T("Plugins.F.A.Q.Actions")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var faq in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="faq-question cursor-pointer" onclick="toggleAnswerUp(@faq.Id)">
+                                        <span>@faq.Question</span>
+                                        <i class="fas fa-chevron-down float-right"></i>
+                                    </div>
+                                    <div id="answer-@faq.Id" class="faq-answer mt-2" style="display: none;">
+                                        @Html.Raw(faq.Answer)
+                                    </div>
+                                </td>
+                                <td>
+                                    <a target="_blank" href="@Url.Action("Edit", "Product", new { id = faq.ProductId })">@faq.ProductName</a>
+                                </td>
+                                <td>@faq.LastModified</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-secondary btn-sm" onclick="openEditModal('@Html.Raw(JavaScriptEncoder.Default.Encode(faq.Question))', '@faq.Id', '@Html.Raw(JavaScriptEncoder.Default.Encode(faq.Answer))', '@view')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('@faq.Id','@view')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm" onclick="toggleVisibility('@faq.Id','@view','@faq.Visibility')">
+                                            <i class="fa @(faq.Visibility ? "fa-eye" : "fa-eye-slash")"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-md-none">
+                @foreach (var faq in Model.Items)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title cursor-pointer" onclick="toggleAnswerUp(@faq.Id)">
+                                @faq.Question
+                                <i class="fas fa-chevron-down float-right"></i>
+                            </h5>
+                            <div id="answer-mobile-@faq.Id" class="faq-answer mt-2" style="display: none;">
+                                @Html.Raw(faq.Answer)
+                            </div>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Product: <a target="_blank" href="@Url.Action("Edit", "Product", new { id = faq.ProductId })">@faq.ProductName</a><br>
+                                    Last Modified: @faq.LastModified
+                                </small>
+                            </p>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-secondary btn-sm" onclick="openEditModal('@Html.Raw(JavaScriptEncoder.Default.Encode(faq.Question))', '@faq.Id', '@Html.Raw(JavaScriptEncoder.Default.Encode(faq.Answer))', '@view')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('@faq.Id','@view')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn btn-primary btn-sm" onclick="toggleVisibility('@faq.Id','@view','@faq.Visibility')">
+                                    <i class="fa @(faq.Visibility ? "fa-eye" : "fa-eye-slash")"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="#" data-page="@(Model.PageIndex - 1)" data-view="@view">Previous</a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                                <a class="page-link" href="#" data-page="@i" data-view="@view">@i</a>
+                            </li>
+                        }
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="#" data-page="@(Model.PageIndex + 1)" data-view="@view">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+}
+
+<script>
+
+
+</script>

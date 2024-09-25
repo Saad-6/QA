@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Language Name="Italian" SupportedVersion="4.70">
+    <LocaleResource Name="Plugins.F.A.Q.UnAnswered_Questions">
+        <Value>Domande senza risposta</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answered_Questions">
+        <Value>Domande risposte</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Question">
+        <Value>Domanda</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answer">
+        <Value>Risposta</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Give_Answer">
+        <Value>Fornire risposta</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Edit_Answer">
+        <Value>Modifica risposta</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Field_Required">
+        <Value>Campo obbligatorio</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Save">
+        <Value>Salva</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Close">
+        <Value>Chiudi</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Last_Modified">
+        <Value>Ultima modifica</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Delete">
+        <Value>Elimina</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Cancel">
+        <Value>Annulla</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Delete_Confirmation">
+        <Value>Sei sicuro di voler eliminare questa FAQ?</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Manage_Product_Questions">
+        <Value>Gestisci domande sui prodotti</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Configure">
+        <Value>Configura</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Product">
+        <Value>Prodotto</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Actions">
+        <Value>Azioni</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Visibility">
+        <Value>Visibilità</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.No_Questions_Found">
+        <Value>Nessuna domanda trovata</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Asked_By">
+        <Value>Chiedere da</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Answered_By">
+        <Value>Risposto da</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Ask_A_Question">
+        <Value>Fai una domanda</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Ask">
+        <Value>Chiedi</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Page_Size">
+        <Value>Dimensione pagina</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Questions_Settings">
+        <Value>Impostazioni domande</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Back">
+        <Value>Indietro</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Allow_Anonymous_To_Ask_Questions">
+        <Value>Consenti agli utenti anonimi di fare domande</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Widget_Location">
+        <Value>Posizione del widget nella pagina dei dettagli del prodotto</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Search">
+        <Value>Cerca</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Settings_Updated">
+        <Value>Le tue impostazioni sono state aggiornate!</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Default_Responder_Name">
+        <Value>Nome rispondente predefinito</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Search_By_Product_Name">
+        <Value>Cerca per nome del prodotto</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Login_To_Ask_A_Question">
+        <Value>Accedi per fare una domanda</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Success_Message">
+        <Value>La tua domanda è stata ricevuta ed è attualmente in revisione. Ti forniremo una risposta il prima possibile.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Be_First_To_Ask">
+        <Value>Sii il primo a fare una domanda su questo prodotto.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Questions_About_This_Product">
+        <Value>Domande su questo prodotto.</Value>
+    </LocaleResource>
+    <LocaleResource Name="Plugins.F.A.Q.Question_Goes_Here">
+        <Value>La tua domanda va qui...</Value>
+    </LocaleResource>
+</Language>

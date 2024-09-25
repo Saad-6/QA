@@ -1,0 +1,72 @@
+@model FAQSettings
+@{
+    Layout = "_AdminLayout";
+    var widgetZones = ViewBag.WidgetZones as IDictionary<string, string>;
+}
+<link rel="stylesheet" href="~/Plugins/F.A.Q/Content/admin.css" />
+
+<div class="container vh-100 d-flex align-items-center justify-content-center">
+    <div class="card shadow-sm p-4 w-50">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="card-title m-0">@T("Plugins.F.A.Q.Questions_Settings")</h3>
+            <a href='@Url.Action("Index","Questions")' class="btn btn-link">@T("Plugins.F.A.Q.Back")</a>
+        </div>
+
+        <form method="post" class="form" asp-controller="Questions" asp-action="Configure">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label class="form-label cursor-pointer" id="anonymous-label" for="allow-anonymous">@T("Plugins.F.A.Q.Allow_Anonymous_To_Ask_Questions")</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="checkbox" class="form-check-input" id="allow-anonymous" asp-for="AllowAnonymousUsersToAskFAQs" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">@T("Plugins.F.A.Q.Default_Responder_Name")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" asp-for="AnsweredBy" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">@T("Plugins.F.A.Q.Widget_Location")</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control" asp-for="ActiveWidgetZone">
+                            @foreach (var widgetZone in widgetZones)
+                            {
+                                <option value="@widgetZone.Key">@widgetZone.Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-success w-100 mt-3">@T("Plugins.F.A.Q.Save")</button>
+
+            @if (ViewBag.Success != null && ViewBag.Success)
+            {
+                <div id="successMessage" class="text-success text-center mt-4">
+                    <h5>@T("Plugins.F.A.Q.Settings_Updated")</h5>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script>
+    $(document).ready(function () {
+        $("#anonymous-label").click(function () {
+            var checkbox = $("#allow-anonymous");
+            checkbox.prop("checked", !checkbox.prop("checked"));
+        });
+    });
+</script>

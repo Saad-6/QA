@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Product Questions",
+  "FriendlyName": "Frequenly Asked Questions",
+  "SystemName": "F.A.Q",
+  "Version": "4.70.10",
+  "SupportedVersions": [ "4.70" ],
+  "Author": "Applivity",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.F.A.Q.dll",
+  "Description": "This Plugins adds a Frequently Asked Questions tab on the product detail page where a customer can either see or ask a question of his own which can be reviewed / answered by the admin "
+}

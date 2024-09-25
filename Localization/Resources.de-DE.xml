@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Language Name="German" SupportedVersion="4.70">
+    
+    <LocaleResource Name="Plugins.F.A.Q.UnAnswered_Questions">
+        <Value>Unbeantwortete Fragen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Answered_Questions">
+        <Value>Beantwortete Fragen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Question">
+        <Value>Frage</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Answer">
+        <Value>Antwort</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Give_Answer">
+        <Value>Antwort geben</Value>
+    </LocaleResource>
+    
+        <LocaleResource Name="Plugins.F.A.Q.Page_Size">
+        <Value>Seitengröße</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Questions_Settings">
+        <Value>Fragen Einstellungen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Back">
+        <Value>Zurück</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Allow_Anonymous_To_Ask_Questions">
+        <Value>Anonymen Benutzern erlauben, Fragen zu stellen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Widget_Location">
+        <Value>Widget-Position auf der Produktdetailseite</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Search">
+        <Value>Suche</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Default_Responder_Name">
+        <Value>Standardname des Antwortenden</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Search_By_Product_Name">
+        <Value>Nach Produktnamen suchen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Login_To_Ask_A_Question">
+        <Value>Zum Stellen einer Frage einloggen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Settings_Updated">
+        <Value>Ihre Einstellungen wurden aktualisiert!</Value>
+    </LocaleResource>
+
+    <LocaleResource Name="Plugins.F.A.Q.Edit_Answer">
+        <Value>Antwort bearbeiten</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Field_Required">
+        <Value>Feld ist erforderlich</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Save">
+        <Value>Speichern</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Close">
+        <Value>Schließen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Last_Modified">
+        <Value>Zuletzt geändert</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Delete">
+        <Value>Löschen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Cancel">
+        <Value>Abbrechen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Delete_Confirmation">
+        <Value>Sind Sie sicher, dass Sie diese FAQ löschen möchten?</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Manage_Product_Questions">
+        <Value>Produktfragen verwalten</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Configure">
+        <Value>Konfigurieren</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Product">
+        <Value>Produkt</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Actions">
+        <Value>Aktionen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Visibility">
+        <Value>Sichtbarkeit</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.No_Questions_Found">
+        <Value>Keine Fragen gefunden</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Asked_By">
+        <Value>Gefragt von</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Answered_By">
+        <Value>Beantwortet von</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Ask_a_Question">
+        <Value>Eine Frage stellen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Ask">
+        <Value>Fragen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Success_Message">
+        <Value>Ihre Frage wurde erhalten und wird derzeit überprüft. Wir werden so bald wie möglich eine Antwort geben.</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Be_First_To_Ask">
+        <Value>Seien Sie der Erste, der eine Frage zu diesem Produkt stellt.</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Questions_About_This_Product">
+        <Value>Fragen zu diesem Produkt.</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Question_Goes_Here">
+        <Value>Ihre Frage geht hier hin...</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Login_To_Ask_A_Question">
+        <Value>Einloggen, um eine Frage zu stellen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Questions_Settings">
+        <Value>Fragen-Einstellungen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Back">
+        <Value>Zurück</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Allow_Anonymous_To_Ask_Questions">
+        <Value>Anonyme Benutzer dürfen Fragen stellen</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Widget_Location">
+        <Value>Position des Widgets auf der Produktdetailseite</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Search">
+        <Value>Suche</Value>
+    </LocaleResource>
+    
+    <LocaleResource Name="Plugins.F.A.Q.Search_By_Product_Name">
+        <Value>Suche nach Produktname</Value>
+    </LocaleResource>
+
+</Language>

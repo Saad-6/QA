@@ -1,0 +1,30 @@
+@model  string
+@{
+    string view = Model;
+}
+<div class="flex justify-space-evenly align-center">
+
+    <div class="flex align-center g10 m10">
+        <div class="flex align-center">
+            <label for="pageSize" class="mx-3">@T("Plugins.F.A.Q.Page_Size"):</label>
+            <input id="pageSize+@view" hidden value="@ViewBag.pageSize" />
+            <input hidden id="hiddenProductName" value="@ViewBag.ProductName" />
+            <select style="max-width:70px; display: inline-block;" onchange="handleChange(1, '@view')" id="@view" class="form-control">
+                <option>@ViewBag.pageSize</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="0">Show All</option>
+            </select>
+        </div>
+        <div class="flex align-center">
+
+            <input hidden name="view" id="filterView" value="@view" />
+            <label for="productQuery mr-10"></label>
+            <input class="form-control mr-15" id="@($"{view}Param")" value="@ViewBag.ProductName" placeholder=@T("Plugins.F.A.Q.Search_By_Product_Name") name="productName" required />
+            <button class="btn btn-secondary" onclick="handleChange(1, '@view')">@T("Plugins.F.A.Q.Search")</button>
+
+        </div>
+    </div>
+</div>
