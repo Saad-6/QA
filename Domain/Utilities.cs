@@ -1,9 +1,4 @@
-﻿using Nop.Core.Domain.Localization;
-using Nop.Core.Infrastructure;
-using Nop.Data;
-using Nop.Data.DataProviders;
-using Nop.Plugin.F.A.Q.Models;
-using Nop.Services.Localization;
+﻿using Nop.Plugin.F.A.Q.Models;
 using Nop.Web.Framework.Infrastructure;
 
 
@@ -20,8 +15,9 @@ public static class Utilities
         };
         return type;
     }
+
     // No mapping required as of now since we need every attribute in the FAQ Entity in our views
-    public static IList<FAQRetail> MapToViewModel(IList<FAQEntity> list)
+    public static IList<FAQRetail> BuildRetailViewModel(IList<FAQEntity> list)
     {
         var questionsViewModels = new List<FAQRetail>();
         foreach (var item in list)

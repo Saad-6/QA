@@ -2,10 +2,13 @@
 @model FAQRetailViewModel
     @{
         Layout = "~/Plugins/F.A.Q/Views/Shared/_RetailLayout.cshtml";
+
         string view = "_FAQWidget";
     }
+
 <link rel="stylesheet" href="~/Plugins/F.A.Q/Content/admin.css" />
-<div class="flex justify-content-between align-center p10 mb-3"id="ask-question-div" >
+
+<div class="flex justify-content-between align-center p10 mb-3" id = "ask-question-div" >
    
     <div id="faq-heading cursor-pointer" >
             @if (Model.PaginatedList.Items != null && Model.PaginatedList.Items.Any())

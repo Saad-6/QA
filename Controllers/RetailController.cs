@@ -15,7 +15,7 @@ public class RetailController : Controller
     private readonly IProductService _product;
     private readonly ICustomerService _customerService;
     private readonly ISettingService _settings;
-    public RetailController(IFAQRepository repo,IProductService service,ISettingService setting,ICustomerService customerService)
+    public RetailController(IFAQRepository repo, IProductService service, ISettingService setting, ICustomerService customerService)
     {
         _repo = repo;
         _product = service;
@@ -24,68 +24,66 @@ public class RetailController : Controller
     }
   
     [HttpPost]
-    public IActionResult AddQuestion(string question , int productId, string productName)
+    public async Task<IActionResult> AddQuestion(string question , int productId)
     {
-        string answeredBy;
-        string customerName;
-        var customer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
         if (string.IsNullOrEmpty(question) || productId == 0)
         {
             return BadRequest();
         }
-        if (string.IsNullOrEmpty(productName))
-        {
-            productName = _product.GetProductByIdAsync(productId).Result.Name;
-        }
-        var settings = _settings.LoadSetting<FAQSettings>();
-        if (!string.IsNullOrEmpty(settings.AnsweredBy))
-        {
-            answeredBy = settings.AnsweredBy;
-        }
-        else
-        {
-            answeredBy = "NopTeam";
-        }
-        if (!string.IsNullOrEmpty(customer.Result.FirstName))
-        {
-            customerName = customer.Result.FirstName;
-        }
-        else
-        {
-            customerName = "Anonymous";
-        }
-        var faq = new FAQEntity();
-        faq.Question = question;
-        faq.ProductId = productId;
-        faq.AskedDate = DateTime.Now;
-        faq.LastModified = DateTime.Now;
-        faq.ProductName = productName;
-        faq.Visibility = true;
-        faq.AnsweredBy = answeredBy;
-        faq.Upvotes = 0;
-        faq.UserName = customerName;
-        _repo.Crud(faq,Operation.Create);
+
+        var faq = await BuildFAQ(question, productId);
+
+        await _repo.CrudAsync(faq,Operation.Create);
 
         return Ok(new { message = "Question added successfully" });
     }
-    [HttpPost]
-    public IActionResult FAQWidget(int productId,int page = 1,int size = 5)
+
+    private async Task<FAQEntity> BuildFAQ(string question, int productId) 
     {
+        var settings = await _settings.LoadSettingAsync<FAQSettings>();
+        var customer = await EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
+        var product = await _product.GetProductByIdAsync(productId);
+
+        return  new FAQEntity {
+            Question = question,
+            ProductId = product.Id,
+            ProductName = product.Name,
+            AskedDate = DateTime.Now,
+            LastModified = DateTime.Now,
+            Visibility = true,
+            UserName = customer?.FirstName ?? "Anonymous",
+            Upvotes = 0,
+            AnsweredBy = settings.AnsweredBy ?? "Admin",
+             };
+    }
+    // Does the same job as ProductViewComponent's Invoke method , the only reason for using it is for pagination ( which i am currently not sure if we can do with a ViewComponent? )
+    [HttpPost]
+    public async Task<IActionResult> FAQWidget(int productId, int page = 1, int size = 5)
+    {
+
         var pageIndex = page - 1;
-        var startIndex = (size * pageIndex);
-        var faqs = _repo.GetFAQ(FAQType.Answered, size, startIndex, SortExpression.LastModified,productId,visibility:Visibility.Visible);
-        var customer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
-        var count = _repo.GetCount(FAQType.Answered, productId, visibility: Visibility.Visible);
-        //var faqs = _repo.LoadForProduct(productId,true);
-        var settings = _settings.LoadSetting<FAQSettings>();
-        var faqRetailViewList = Utilities.MapToViewModel(faqs);
-        var paginatedList = new PaginatedList<FAQRetail>(faqRetailViewList, count, page, size);
-        var retailViewModel = new FAQRetailViewModel();
-        retailViewModel.PaginatedList = paginatedList;
-        retailViewModel.CurrentSettings.AnsweredBy = settings.AnsweredBy;
-        retailViewModel.CurrentSettings.AllowAnoymourUsers = settings.AllowAnonymousUsersToAskFAQs;
-        retailViewModel.CurrentSettings.UserLoggedIn = customer.Result.Username != null;
-        retailViewModel.CurrentSettings.ProductId = productId;
+        var startIndex = size * pageIndex;
+
+        var settings = await _settings.LoadSettingAsync<FAQSettings>();
+        var faqCount = await _repo.GetCountAsync(FAQType.Answered, productId, visibility: Visibility.Visible);
+        var faqs = await _repo.GetFAQAsync(FAQType.Answered, size, startIndex, SortExpression.LastModified, productId, visibility: Visibility.Visible);
+        var customer = await EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
+
+        var faqRetailViewList = Utilities.BuildRetailViewModel(faqs);
+        var paginatedList = new PaginatedList<FAQRetail>(faqRetailViewList, faqCount, page, size);
+
+        var retailViewModel = new FAQRetailViewModel()
+        {
+            PaginatedList = paginatedList,
+            CurrentSettings = new()
+            {
+                AnsweredBy = settings.AnsweredBy,
+                AllowAnoymourUsers = settings.AllowAnonymousUsersToAskFAQs,
+                UserLoggedIn = !string.IsNullOrEmpty(customer.Username),
+                ProductId = productId
+            }
+        };
+
         return View("~/Plugins/F.A.Q/Views/_FAQWidget.cshtml", retailViewModel);
     }
 

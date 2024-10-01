@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Infrastructure;
 using Nop.Plugin.F.A.Q.Domain;
 using Nop.Plugin.F.A.Q.Models;
@@ -7,6 +8,7 @@ using Nop.Plugin.F.A.Q.Services;
 using Nop.Services.Catalog;
 using Nop.Services.Configuration;
 using Nop.Services.Customers;
+using Nop.Web.Areas.Admin.Models.Settings;
 using Nop.Web.Framework.Components;
 using Nop.Web.Models.Catalog;
 
@@ -26,38 +28,60 @@ public class ProductViewComponent : NopViewComponent
         _customerService = customerService;
         _workContext = workContext;
     }
+    [HttpPost]
     public async Task<IViewComponentResult> InvokeAsync(string widgetZone, object additionalData , int pageNumber = 1,int pageSize = 5)
     {
-        int productId = 0;
         if (additionalData == null)
             return Content("");
-        if(additionalData is ProductReviewsModel)
-        {
-            productId = ((ProductReviewsModel)additionalData).ProductId;
-        }else if( additionalData is ProductDetailsModel)
-        {
-         productId = ((ProductDetailsModel)additionalData).Id;
-        }
-        var product = _productService.GetProductByIdAsync(productId);
-        if (product == null || product.IsFaulted)
+
+        var productId = GetProductId(additionalData);
+        var product = await _productService.GetProductByIdAsync(productId);
+        if (product == null)
             return Content("");
-        var pageIndex = pageNumber - 1;
-        var startIndex = (pageSize * pageIndex);
-        var settings = _settings.LoadSetting<FAQSettings>();
-        var customer = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
-        var count = _repo.GetCount(FAQType.Answered,productId,visibility:Visibility.Visible);
-        var faqs = _repo.GetFAQ(FAQType.Answered, pageSize, startIndex, SortExpression.LastModified, productId, visibility: Visibility.Visible);
-        var faqRetailViewList = Utilities.MapToViewModel(faqs);
-        var paginatedList = new PaginatedList<FAQRetail>(faqRetailViewList, count, pageNumber, pageSize);
-        var retailViewModel = new FAQRetailViewModel();
-        retailViewModel.PaginatedList = paginatedList;
-        retailViewModel.CurrentSettings.AnsweredBy = settings.AnsweredBy;
-        retailViewModel.CurrentSettings.AllowAnoymourUsers = settings.AllowAnonymousUsersToAskFAQs;
-        retailViewModel.CurrentSettings.UserLoggedIn = customer.Result.Username != null;
-        retailViewModel.CurrentSettings.ProductId = productId;
-        ViewBag.ProductName = product.Result.Name;
 
+        var retailViewModel = await BuildFAQRetailViewModelAsync(productId, pageNumber, pageSize);
+        ViewBag.WidgetZone = widgetZone;
         return View("~/Plugins/F.A.Q/Views/_FAQWidget.cshtml", retailViewModel);
+    }
+    private int GetProductId(object data)
+    {
+        if(data is ProductReviewModel)
+        {
+            return ((ProductReviewsModel)data).ProductId;
+        }
+        if(data is ProductDetailsModel)
+        {
+        return ((ProductDetailsModel)data).Id;
+        }
+        if(data is int)
+        {
+            return (int)data;
+        }
+        return 0;
+    }
+    public async Task<FAQRetailViewModel> BuildFAQRetailViewModelAsync(int productId, int pageNumber, int pageSize)
+    {
+        var pageIndex = pageNumber - 1;
+        var startIndex = pageSize * pageIndex;
 
+        var settings = await _settings.LoadSettingAsync<FAQSettings>();
+        var faqCount =  await _repo.GetCountAsync(FAQType.Answered, productId, visibility: Visibility.Visible);
+        var faqs = await _repo.GetFAQAsync(FAQType.Answered, pageSize, startIndex, SortExpression.LastModified, productId, visibility: Visibility.Visible);
+        var customer = await EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerAsync();
+        
+        var faqRetailViewList = Utilities.BuildRetailViewModel(faqs);
+        var paginatedList = new PaginatedList<FAQRetail>(faqRetailViewList, faqCount, pageNumber, pageSize);
+
+        return new FAQRetailViewModel
+        {
+            PaginatedList = paginatedList,
+            CurrentSettings = new ()
+            {
+                AnsweredBy = settings.AnsweredBy,
+                AllowAnoymourUsers = settings.AllowAnonymousUsersToAskFAQs,
+                UserLoggedIn = !string.IsNullOrEmpty(customer.Username),
+                ProductId = productId
+            }
+        };
     }
 }

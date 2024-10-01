@@ -8,12 +8,12 @@ public class FAQRepository : IFAQRepository
 {
     private readonly MsSqlNopDataProvider _dataContext;
     private readonly IRepository<FAQEntity> _repository;
-    public FAQRepository(IRepository<FAQEntity> repository)
+    public FAQRepository(IRepository<FAQEntity> repository,MsSqlNopDataProvider dataContext)
     {
-        _dataContext = new MsSqlNopDataProvider();
+        _dataContext = dataContext;
         _repository = repository;
     }
-    public IList<FAQEntity> GetFAQ(FAQType type = FAQType.All, int pageSize = 0, int startIndex = 0, SortExpression sortExpression = SortExpression.LastModified, int productId = 0, string productName = "",Visibility visibility = Visibility.Undefined)
+    public async Task <IList<FAQEntity>> GetFAQAsync(FAQType type = FAQType.All, int pageSize = 0, int startIndex = 0, SortExpression sortExpression = SortExpression.LastModified, int productId = 0, string productName = "",Visibility visibility = Visibility.Undefined)
     {
         var query = _dataContext.GetTable<FAQEntity>().AsQueryable();
         if (productId > 0)
@@ -50,10 +50,59 @@ public class FAQRepository : IFAQRepository
         {
             query = query.Skip(startIndex).Take(pageSize);
         }
-        return query.ToList();
+        return await query.ToListAsync();
+    }
+    public async Task<FAQCounts> GetCountsAsync(int productId = 0, string productName = "", Visibility visibility = Visibility.Undefined)
+    {
+        var query = _dataContext.GetTable<FAQEntity>().AsQueryable();
+
+        if (visibility != Visibility.Undefined)
+        {
+            query = visibility switch
+            {
+                Visibility.Visible => query.Where(m => m.Visibility == true),
+                Visibility.Hidden => query.Where(m => m.Visibility == false),
+                _ => query,
+            };
+        }
+
+        if (productId > 0)
+        {
+            query = query.Where(m => m.ProductId == productId);
+        }
+
+        if (!string.IsNullOrEmpty(productName))
+        {
+            query = query.Where(m => m.ProductName.Contains(productName));
+        }
+
+        var counts = await query
+            .GroupBy(f => new
+            {
+                IsAnswered = f.Answer != null,
+                // If you need to include the visibility here, you can group by it as well
+            })
+            .Select(g => new
+            {
+                IsAnswered = g.Key.IsAnswered,
+                Count = g.Count()
+            })
+            .ToListAsync();
+
+        // Aggregate counts based on the grouping
+        var answeredCount = counts.FirstOrDefault(c => c.IsAnswered)?.Count ?? 0;
+        var unansweredCount = counts.FirstOrDefault(c => !c.IsAnswered)?.Count ?? 0;
+        var totalCount = counts.Sum(c => c.Count);
+
+        return new FAQCounts
+        {
+            TotalCount = totalCount,
+            AnsweredCount = answeredCount,
+            UnansweredCount = unansweredCount
+        };
     }
 
-    public bool Crud(FAQEntity entity, Operation operation)
+    public async Task<bool> CrudAsync(FAQEntity entity, Operation operation)
     {
         if (entity == null || entity.ProductId == 0 || string.IsNullOrEmpty(entity.Question))
         {
@@ -62,20 +111,20 @@ public class FAQRepository : IFAQRepository
         switch (operation)
         {
             case Operation.Create:
-                _repository.Insert(entity);
+              await  _repository.InsertAsync(entity);
                 break;
             case Operation.Update:
-                _repository.Update(entity);
+               await  _repository.UpdateAsync(entity);
                 break;
             case Operation.Delete:
-                _repository.Delete(entity);
+               await _repository.DeleteAsync(entity);
                 break;
             default:
                 return false;
         }
         return true;
     }
-    public int GetCount(FAQType type = FAQType.All, int productId = 0,string productName = "", Visibility visibility = Visibility.Undefined)
+    public async  Task<int> GetCountAsync(FAQType type = FAQType.All, int productId = 0,string productName = "", Visibility visibility = Visibility.Undefined)
     {
         var query = _dataContext.GetTable<FAQEntity>().AsQueryable();
         if (type == FAQType.Answered)
@@ -100,19 +149,18 @@ public class FAQRepository : IFAQRepository
         {
             query = query.Where(m=>m.ProductName.Contains(productName));
         }
-        return query.Count();
+        return await query.CountAsync();
     }
-    public FAQEntity LoadById(int id)
+    public async Task<FAQEntity> LoadByIdAsync(int id)
     {
-        var query = _dataContext.GetTable<FAQEntity>().AsQueryable();
-        var faq = query.Where(m => m.Id == id).FirstOrDefault();
-        return faq;
+        return await _repository.GetByIdAsync(id);
+     
     }
-    public IList<FAQEntity> LoadForProduct(int id, bool visibility)
+    public async Task <IList<FAQEntity>> LoadForProductAsync(int id, bool visibility)
     {
         var query = _dataContext.GetTable<FAQEntity>().AsQueryable();
         query = query.Where(m => m.Answer != null);
         query = query.Where(m=>m.Visibility == visibility);
-        return query.Where(m => m.ProductId == id).ToList<FAQEntity>();
+        return await query.Where(m => m.ProductId == id).ToListAsync<FAQEntity>();
     }
 }

@@ -37,16 +37,10 @@ public class FAQPlugin : BasePlugin, IWidgetPlugin, IAdminMenuPlugin
     {
         var localizationService = EngineContext.Current.Resolve<ILocalizationService>();
         var languageService = EngineContext.Current.Resolve<ILanguageService>();
-        try
-        {
-           await LanguageSettings.RemovePluginResourcesAsync();
-             _migrationManager.ApplyDownMigrations(_assembly);
+    
+        await LanguageSettings.RemovePluginResourcesAsync();
+       _migrationManager.ApplyDownMigrations(_assembly);
 
-        }
-        catch (Exception ex)
-        {
-         
-        }
         await base.UninstallAsync();
     }
     public bool HideInWidgetList => false;
@@ -58,9 +52,9 @@ public class FAQPlugin : BasePlugin, IWidgetPlugin, IAdminMenuPlugin
     {
         return typeof(ProductViewComponent);
     }
-    public Task<IList<string>> GetWidgetZonesAsync()
+    public async Task<IList<string>> GetWidgetZonesAsync()
     {
-        var settings = _settings.LoadSetting<FAQSettings>();
+        var settings = await _settings.LoadSettingAsync<FAQSettings>();
         string widgetZone;
         if (settings.ActiveWidgetZone != null)
         { 
@@ -71,7 +65,7 @@ public class FAQPlugin : BasePlugin, IWidgetPlugin, IAdminMenuPlugin
             widgetZone = PublicWidgetZones.ProductDetailsBottom;
         }
 
-        return Task.FromResult<IList<string>>(new List<string> { widgetZone });
+        return new List<string> { widgetZone };
     }
     public Task ManageSiteMapAsync(SiteMapNode rootNode)
     {

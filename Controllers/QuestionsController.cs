@@ -2,134 +2,137 @@
 using Nop.Plugin.F.A.Q.Domain;
 using Nop.Plugin.F.A.Q.Models;
 using Nop.Plugin.F.A.Q.Services;
-using Nop.Services.Catalog;
 using Nop.Services.Configuration;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
 
-[Area(AreaNames.ADMIN)]
-[AutoValidateAntiforgeryToken]
-[AuthorizeAdmin]
-public class QuestionsController : BasePluginController
+namespace Nop.Plugin.F.A.Q.Controllers
 {
-    private readonly IFAQRepository _repo;
-    private readonly IProductService _service;
-    private readonly ISettingService _settings;
-    public QuestionsController(IFAQRepository repo,IProductService service,ISettingService setting)
+    [Area(AreaNames.ADMIN)]
+    [AutoValidateAntiforgeryToken]
+    [AuthorizeAdmin]
+    public class QuestionsController : BasePluginController
     {
-        _repo = repo;
-        _service = service;
-        _settings = setting;
-    }
+        private readonly IFAQRepository _repo;
+        private readonly ISettingService _settings;
 
-    public async Task<IActionResult> Configure()
-    {
-        ViewBag.WidgetZones = Utilities.GetAvailableWidgetZones();
-        var settings = _settings.LoadSetting<FAQSettings>();
-        return View("~/Plugins/F.A.Q/Views/Configure.cshtml",settings);
-    }
-    [HttpPost, ActionName("Configure")]
-    public IActionResult ChangeSettings(FAQSettings settings)
-    {
-        ViewBag.WidgetZones = Utilities.GetAvailableWidgetZones();
-        if (ModelState.IsValid)
+        public QuestionsController(IFAQRepository repo, ISettingService settings)
         {
-            _settings.SaveSetting(settings);
-            ViewBag.Success = true;
+            _repo = repo;
+            _settings = settings;
+        }
+        public IActionResult Configure()
+        {
+            var settings = _settings.LoadSetting<FAQSettings>();
+            ViewBag.WidgetZones = Utilities.GetAvailableWidgetZones();
             return View("~/Plugins/F.A.Q/Views/Configure.cshtml", settings);
         }
-       
-        return View("~/Plugins/F.A.Q/Views/Configure.cshtml", settings);
-    }
-    public async Task<IActionResult> Index(int page = 1, int size = 10)
-    {
-        var allCount = _repo.GetCount();
-        var answeredCount = _repo.GetCount(FAQType.Answered);
-        var unansweredCount = _repo.GetCount(FAQType.Unanswered);
-        var sortExpression = SortExpression.LastModified;
-        var pageIndex = page - 1;
-        var startIndex = 0;
-        var settings = _settings.LoadSetting<FAQSettings>();
-        //   var allFaqs =  Utilities.MapViewModel( _repo.GetFAQ(FAQType.All,size,startIndex),_service);
-        var allFaqs = _repo.GetFAQ(FAQType.All, size, startIndex, sortExpression);
-        var answered = _repo.GetFAQ(FAQType.Answered, size, startIndex, sortExpression);
-        var unAnswered = _repo.GetFAQ(FAQType.Unanswered, size, startIndex, sortExpression);
-        var jointModel = new JointQuestionModel<FAQEntity>
-        {
-            All = new PaginatedList<FAQEntity>(allFaqs, allCount, page, size),
-            Answered = new PaginatedList<FAQEntity>(answered, answeredCount, page, size),
-            Unanswered = new PaginatedList<FAQEntity>(unAnswered, unansweredCount, page, size),
-            FAQSettings = settings,
-        };
-        ViewBag.pageSize = size ;
-        ViewBag.page = page;
-        return View("~/Plugins/F.A.Q/Views/AdminIndex.cshtml", jointModel);
-    }
-    [HttpPost]
-    public IActionResult UpdateAnswer(int faqId, string view, string answer )
-    {
-        var faq = _repo.LoadById(faqId);
-        if (faq == null || string.IsNullOrEmpty(view) || string.IsNullOrEmpty(answer))
-        {
-            return Json(new { success = false, message = "Invalid input." });
-        }
-        faq.Answer = answer;
-        faq.LastModified = DateTime.Now;
-        _repo.Crud(faq, Operation.Update);
-        return ReturnPartialView(view);
-    }
-    public IActionResult ToggleVisibility(int faqId ,string view,bool visibility)
-    {
-        var faq = _repo.LoadById(faqId);
-        if (faq == null)
-        {
-            return Json(new { success = false, message = "No FAQ Found." });
-        }
-        faq.Visibility = !visibility;
-        _repo.Crud(faq,Operation.Update);
-        return ReturnPartialView(view);
-   
-    }
 
-    [HttpPost]
-    public IActionResult Delete(int id,string view)
-    {
-       var faq = _repo.LoadById(id);
-        if (faq == null)
+        [HttpPost, ActionName("Configure")]
+        public IActionResult ChangeSettings(FAQSettings settings)
         {
-            return Json(new { success = false, message = "No FAQ Found." });
+            if (!ModelState.IsValid)
+                return Configure();
+
+            _settings.SaveSetting(settings);
+            ViewBag.Success = true;
+            return Configure();
         }
-        _repo.Crud(faq, Operation.Delete);
-        return ReturnPartialView(view);
+
+        public async Task<IActionResult> Index(int page = 1, int size = 10)
+        {
+            var settings = await _settings.LoadSettingAsync<FAQSettings>();
+            var jointModel = await BuildJointQuestionModelAsync(page, size);
+            jointModel.FAQSettings = settings;
+
+            ViewBag.pageSize = size;
+            ViewBag.page = page;
+            return View("~/Plugins/F.A.Q/Views/AdminIndex.cshtml", jointModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAnswer(int faqId, string view, string answer)
+        {
+            var faq = await _repo.LoadByIdAsync(faqId);
+            if (faq == null || string.IsNullOrEmpty(view) || string.IsNullOrEmpty(answer))
+                return Json(new { success = false, message = "Invalid input." });
+
+            faq.Answer = answer;
+            faq.LastModified = DateTime.Now;
+            await _repo.CrudAsync(faq, Operation.Update);
+            return await ReturnPartialView(view);
+        }
+
+        public async Task<IActionResult> ToggleVisibility(int faqId, string view, bool visibility)
+        {
+            var faq = await _repo.LoadByIdAsync(faqId);
+            if (faq == null)
+                return Json(new { success = false, message = "No FAQ Found." });
+
+            faq.Visibility = !visibility;
+            await _repo.CrudAsync(faq, Operation.Update);
+            return await ReturnPartialView(view);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, string view)
+        {
+            var faq = await _repo.LoadByIdAsync(id);
+            if (faq == null)
+                return Json(new { success = false, message = "No FAQ Found." });
+
+            await _repo.CrudAsync(faq, Operation.Delete);
+            return await ReturnPartialView(view);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReturnPartialView(string view, int pageNumber = 1, int pageSize = 10, string productName = "")
+        {
+            var type = Utilities.GetType(view);
+            var count = await _repo.GetCountAsync(type, productName: productName);
+
+            // show all search results on a single page
+            if (!string.IsNullOrEmpty(productName))
+            {
+                pageNumber = 1;
+                pageSize = count;
+            }
+
+            var startIndex = (pageSize * (pageNumber - 1));
+            pageSize = pageSize == 0 || pageSize > count ? count : pageSize;
+
+            var faqs = await _repo.GetFAQAsync(type, pageSize, startIndex, SortExpression.LastModified, productName: productName);
+            var list = new PaginatedList<FAQEntity>(faqs, count, pageNumber, pageSize);
+
+            ViewBag.pageSize = pageSize;
+            return PartialView($"~/Plugins/F.A.Q/Views/{view}.cshtml", list);
+        }
+
+        private async Task<JointQuestionModel<FAQEntity>> BuildJointQuestionModelAsync(int page, int size)
+        {
+            var counts = await _repo.GetCountsAsync();
+
+            var answeredCount = counts.AnsweredCount;
+            var unansweredCount = counts.UnansweredCount;
+
+            var allFaqs = await _repo.GetFAQAsync();
+            var answered = allFaqs
+                .Where(m => m.Answer != null)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToList();
+            var unAnswered = allFaqs
+                .Where(m => m.Answer == null)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToList();
+
+            return new JointQuestionModel<FAQEntity>
+            {
+                Answered = new PaginatedList<FAQEntity>(answered, answeredCount, page, size),
+                Unanswered = new PaginatedList<FAQEntity>(unAnswered, unansweredCount, page, size)
+            };
+        }
     }
-    [HttpPost]
-    public IActionResult ReturnPartialView(string view,int pageNumber = 1, int pageSize = 10,string productName = "")
-    {  
-        
-        FAQType type = Utilities.GetType(view);
-        SortExpression sortExpression = SortExpression.LastModified;
-        int count;
-        if (!string.IsNullOrEmpty(productName))
-        {
-            count = _repo.GetCount(type,productName:productName);
-            pageNumber = 1;
-          // Uncomment this line if you want to display every search result on a single page
-            pageSize = count;
-        }
-        else
-        {
-            count = _repo.GetCount(type);
-        }
-        var pageIndex = pageNumber - 1;
-        var startIndex = (pageSize * pageIndex);
-        pageSize = pageSize == 0 ? count : pageSize;
-        pageSize = pageSize > count ? count : pageSize;
-        var faqs = _repo.GetFAQ(type, pageSize, startIndex, sortExpression,productName:productName);
-        var list = new PaginatedList<FAQEntity>(faqs, count, pageNumber, pageSize);
-        ViewBag.pageSize = pageSize;
-        
-        return PartialView($"~/Plugins/F.A.Q/Views/{view}.cshtml", list);
-    }
-   
 }

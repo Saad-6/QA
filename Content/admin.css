@@ -188,7 +188,20 @@ margin-top:auto;
   border-radius: 5px;
   cursor: pointer;
 }
-
+.faq-question-mobile {
+  font-weight: bold;
+  color: #007bff;
+}
+.faq-separator {
+  border-top: 1px solid #dee2e6;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.faq-answer-content {
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
   .custom-modal-button:hover {
     background-color: #495057;
   }
